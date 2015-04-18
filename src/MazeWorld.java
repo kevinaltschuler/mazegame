@@ -11,7 +11,7 @@ import javalib.worldimages.*;
 import javalib.impworld.*;
 
 import java.awt.Color;
-
+//Killroy was here
 // Represents a single square of the game area
 class Cell {
     // In logical coordinates, with the origin at the top-
