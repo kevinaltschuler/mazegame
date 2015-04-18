@@ -19,14 +19,14 @@ class Cell {
     int x;
     int y;
     //size in pixels
-    static final int CELL_SIZE = 10;
+    static final int SIZE = 650/MazeWorld.WIDTH;
     Cell(double height, int x, int y) {
         this.x = x;
         this.y = y;
     }
     WorldImage cellImage(double waterHeight) {
         return new RectangleImage(new Posn(this.x, this.y), 
-                Cell.CELL_SIZE, Cell.CELL_SIZE, new Color(1,1,1));
+                Cell.SIZE, Cell.SIZE, new Color(1,1,1));
     }
 }
 
@@ -37,18 +37,14 @@ class Player {
 }
 
 class MazeWorld extends World {
-    int width = 64;
-    int height = 64;
+    static final int WIDTH = 100;
+    static final int HEIGHT = 64;
     //player
     Player player = new Player();
     // all the cells
     ArrayList<ArrayList<Cell>> board;
     MazeWorld() {
-        // default constructer
-    }
-    MazeWorld(int width, int height) {
-        this.width = width;
-        this.height = height;
+        // default constructor
     }
     void reset(int width, int height) {
 
@@ -104,7 +100,7 @@ class ExamplesWorld {
 
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
-        m1.bigBang(650, 650, 1);
+        m1.bigBang(Cell.SIZE * MazeWorld.WIDTH, Cell.SIZE * MazeWorld.HEIGHT, 1);
         return 1;
     }
     int run = this.runAnimation();
