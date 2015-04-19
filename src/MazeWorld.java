@@ -60,12 +60,16 @@ class MazeWorld extends World {
     Player player = new Player();
     // all the cells
     ArrayList<ArrayList<Cell>> board;
-    Stack<Integer> edges;
+    ArrayList<Edge> edges;
     MazeWorld() {
         // default constructor
     }
     void reset(int width, int height) {
-     
+        int i = ((MazeWorld.HEIGHT + 1) * MazeWorld.WIDTH) + ((MazeWorld.WIDTH + 1) * MazeWorld.HEIGHT);
+        for (i = i; i >= 0; i -= 1)
+        {
+            edges.add(new Edge());
+        }
     }
     //The entire background image for this world
     public WorldImage background = 
@@ -111,7 +115,7 @@ class MazeWorld extends World {
 
 class ExamplesWorld {
     //TODO
-    Cell c3 = new Cell(50.0, 20, 10, null, null, null, null);
+    Cell c3 = new Cell(50.0, 20, 10, new Edge(), new Edge(), new Edge(), new Edge());
     //Cell c4 = new Cell(25.0, 10, 20);
     //Cell c5 = new Cell(25.0, 10, 0);
 
