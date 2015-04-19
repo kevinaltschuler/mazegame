@@ -72,7 +72,7 @@ class MazeWorld extends World {
         {
             edges.add(new Edge());
         }
-            Collections.sort(edges);
+        Collections.sort(edges);
     }
     //The entire background image for this world
     public WorldImage background = 
