@@ -4,6 +4,9 @@
 //Andrew Barrett
 //andrew
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
 import java.util.Stack;
 
 import tester.*;
@@ -14,11 +17,18 @@ import javalib.impworld.*;
 import java.awt.Color;
 
 //Represents an Edge of a Cell
-class Edge {
-    double weight;
+class Edge implements Comparator<Edge>, Comparable<Edge> {
+    Integer weight;
     Edge()
     {
-        weight = Math.random();
+        Random r = new Random();
+        weight = r.nextInt(100);
+    }
+    public int compare(Edge arg0, Edge arg1) {
+        return arg0.weight - arg1.weight;
+    }
+    public int compareTo(Edge arg0) {
+        return this.weight.compareTo(arg0.weight);
     }
 }
 // Represents a single square of the game area
@@ -57,11 +67,12 @@ class MazeWorld extends World {
         //default constructor
     }
     void reset(int width, int height) {
-        int i = ((MazeWorld.HEIGHT + 1) * MazeWorld.WIDTH) + ((MazeWorld.WIDTH + 1) * MazeWorld.HEIGHT);
-        for (i = i; i >= 0; i -= 1)
+        int numedges = ((MazeWorld.HEIGHT + 1) * MazeWorld.WIDTH) + ((MazeWorld.WIDTH + 1) * MazeWorld.HEIGHT);
+        for (int i = numedges; i >= 0; i -= 1)
         {
             edges.add(new Edge());
         }
+            Collections.sort(edges);
     }
     //The entire background image for this world
     public WorldImage background = 
