@@ -4,6 +4,7 @@
 //Andrew Barrett
 //andrew
 import java.util.ArrayList;
+import java.util.Stack;
 
 import tester.*;
 import javalib.colors.*;
@@ -43,6 +44,7 @@ class MazeWorld extends World {
     Player player = new Player();
     // all the cells
     ArrayList<ArrayList<Cell>> board;
+    Stack<Cell> edges;
     MazeWorld() {
         // default constructor
     }
