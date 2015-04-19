@@ -27,19 +27,11 @@ class Cell {
     // left corner of the screen
     int x;
     int y;
-    Edge N;
-    Edge E;
-    Edge S;
-    Edge W;
     //size in pixels
     static final int SIZE = 650/MazeWorld.WIDTH;
-    Cell(double height, int x, int y, Edge N, Edge E, Edge S, Edge W) {
+    Cell(double height, int x, int y) {
         this.x = x;
         this.y = y;
-        this.N = N;
-        this.E = E;
-        this.S = S;
-        this.W = W;
     }
     WorldImage cellImage(double waterHeight) {
         return new RectangleImage(new Posn(this.x, this.y), 
@@ -115,7 +107,7 @@ class MazeWorld extends World {
 
 class ExamplesWorld {
     //TODO
-    Cell c3 = new Cell(50.0, 20, 10, new Edge(), new Edge(), new Edge(), new Edge());
+    Cell c3 = new Cell(50.0, 20, 10);
     //Cell c4 = new Cell(25.0, 10, 20);
     //Cell c5 = new Cell(25.0, 10, 0);
 
