@@ -13,17 +13,33 @@ import javalib.impworld.*;
 
 import java.awt.Color;
 
+//Represents an Edge of a Cell
+class Edge {
+    double weight;
+    Edge()
+    {
+        weight = Math.random();
+    }
+}
 // Represents a single square of the game area
 class Cell {
     // In logical coordinates, with the origin at the top-
     // left corner of the screen
     int x;
     int y;
+    Edge N;
+    Edge E;
+    Edge S;
+    Edge W;
     //size in pixels
     static final int SIZE = 650/MazeWorld.WIDTH;
-    Cell(double height, int x, int y) {
+    Cell(double height, int x, int y, Edge N, Edge E, Edge S, Edge W) {
         this.x = x;
         this.y = y;
+        this.N = N;
+        this.E = E;
+        this.S = S;
+        this.W = W;
     }
     WorldImage cellImage(double waterHeight) {
         return new RectangleImage(new Posn(this.x, this.y), 
@@ -44,12 +60,12 @@ class MazeWorld extends World {
     Player player = new Player();
     // all the cells
     ArrayList<ArrayList<Cell>> board;
-    Stack<Cell> edges;
+    Stack<Integer> edges;
     MazeWorld() {
         // default constructor
     }
     void reset(int width, int height) {
-
+     
     }
     //The entire background image for this world
     public WorldImage background = 
@@ -63,7 +79,7 @@ class MazeWorld extends World {
     }
     void updateCells() {
 
-        }
+    }
     // handle key events
     public void onKeyEvent(String ke) {
         updatePlayer(ke);
@@ -95,10 +111,10 @@ class MazeWorld extends World {
 
 class ExamplesWorld {
     //TODO
-    Cell c3 = new Cell(50.0, 20, 10);
-    Cell c4 = new Cell(25.0, 10, 20);
-    Cell c5 = new Cell(25.0, 10, 0);
-    
+    Cell c3 = new Cell(50.0, 20, 10, null, null, null, null);
+    //Cell c4 = new Cell(25.0, 10, 20);
+    //Cell c5 = new Cell(25.0, 10, 0);
+
 
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
