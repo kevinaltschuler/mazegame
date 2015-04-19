@@ -43,7 +43,7 @@ class Cell {
     }
     WorldImage cellImage(double waterHeight) {
         return new RectangleImage(new Posn(this.x, this.y), 
-                Cell.SIZE, Cell.SIZE, new Color(1,1,1));
+                Cell.SIZE, Cell.SIZE, new Color(192,192,192));
     }
 }
 
@@ -54,7 +54,7 @@ class Player {
 }
 
 class MazeWorld extends World {
-    static final int WIDTH = 100;
+    static final int WIDTH = 64;
     static final int HEIGHT = 64;
     //player
     Player player = new Player();
@@ -62,7 +62,7 @@ class MazeWorld extends World {
     ArrayList<ArrayList<Cell>> board;
     ArrayList<Edge> edges;
     MazeWorld() {
-        // default constructor
+        //default constructor
     }
     void reset(int width, int height) {
         int i = ((MazeWorld.HEIGHT + 1) * MazeWorld.WIDTH) + ((MazeWorld.WIDTH + 1) * MazeWorld.HEIGHT);
@@ -78,7 +78,7 @@ class MazeWorld extends World {
     public WorldImage makeImage() {
         WorldImage acc = new RectangleImage(new Posn(0, 0), 
                 0, 0, new Black());
-
+        
         return acc;
     }
     void updateCells() {
