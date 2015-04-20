@@ -9,14 +9,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
-
+ 
 import tester.*;
 import javalib.colors.*;
 import javalib.worldimages.*;
 import javalib.impworld.*;
-
+ 
 import java.awt.Color;
-
+ 
 //Represents an Edge of a Cell
 class Edge implements Comparator<Edge>, Comparable<Edge> {
     Integer weight;
@@ -38,7 +38,7 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
     public boolean sameEdge(Edge that) {
         return ((this.c1.sameCell(that.c1) && this.c2.sameCell(that.c2)) ||
                 this.c1.sameCell(that.c2) && this.c2.sameCell(that.c1));
-
+ 
     }
 }
 // Represents a single square of the game area
@@ -57,7 +57,7 @@ class Cell {
         return (this.x == that.x && this.y == that.y);
     }
     WorldImage cellImage(double waterHeight) {
-        return new RectangleImage(new Posn(this.x, this.y), 
+        return new RectangleImage(new Posn(this.x, this.y),
                 Cell.SIZE, Cell.SIZE, new Color(192,192,192));
     }
     boolean find(HashMap<Cell, Cell> h, Cell c) {
@@ -71,13 +71,13 @@ class Cell {
         }
     }
 }
-
+ 
 class Player {
     int x;
     int y;
     Cell cell;
 }
-
+ 
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 64;
@@ -124,10 +124,9 @@ class MazeWorld extends World {
         if (edges.size() <= 2) {
             return edges.size();
         }
-
         int prev = 1; // point to previous
         int curr = 2; // point to current
-
+ 
         while (curr < edges.size()) {
             if (edges.get(curr).sameEdge(edges.get(prev)) && edges.get(curr).sameEdge(edges.get(prev - 1))) {
                 curr += 1;
@@ -137,7 +136,7 @@ class MazeWorld extends World {
                 curr += 1;
             }
         }
-
+ 
         return prev + 1;
     }
     void Union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
@@ -150,11 +149,9 @@ new RectangleImage(new Posn(0, 0), 0, 0, new White());
 public WorldImage makeImage() {
     WorldImage acc = new RectangleImage(new Posn(0, 0), 
             0, 0, new Black());
-
     return acc;
 }
 void updateCells() {
-
 }
 // handle key events
 public void onKeyEvent(String ke) {
@@ -184,13 +181,12 @@ public void onTick() {
     this.updateCells();
 }
 }
-
 class ExamplesWorld {
     //TODO
     //Cell c4 = new Cell(25.0, 10, 20);
     //Cell c5 = new Cell(25.0, 10, 0);
-
-
+ 
+ 
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
         m1.bigBang(Cell.SIZE * MazeWorld.WIDTH, Cell.SIZE * MazeWorld.HEIGHT, 1);
