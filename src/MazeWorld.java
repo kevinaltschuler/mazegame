@@ -6,6 +6,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
 
@@ -75,6 +76,7 @@ class MazeWorld extends World {
     // all the cells
     ArrayList<ArrayList<Cell>> board;
     ArrayList<Edge> edges;
+    HashMap<String, String> representatives;
     MazeWorld() {
         //default constructor
     }
@@ -94,6 +96,14 @@ class MazeWorld extends World {
         }
         Collections.sort(edges);
         this.removeDuplicates(edges);
+        for(int i = 0; edges.size() > 1; i += 1)
+        {
+            Edge e1 = edges.get(i);
+            if(find(representatives, e1.c1) == find(representatives, e1.c2))
+                edges.remove(i);
+            else
+                Union(representatives, find(representatives, e1.c1), find(representatives, e1.c2));
+        }
     }
     public int removeDuplicates(ArrayList<Edge> edges) {
         if (edges.size() <= 2) {
@@ -114,6 +124,12 @@ class MazeWorld extends World {
         }
 
         return prev + 1;
+    }
+    boolean find(Cell c1, Cell c2) {
+        return true;
+    }
+    void Union(Cell c1, Cell c2) {
+        
     }
     //The entire background image for this world
     public WorldImage background = 
