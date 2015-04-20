@@ -96,6 +96,13 @@ class MazeWorld extends World {
         }
         Collections.sort(edges);
         this.removeDuplicates(edges);
+        for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
+            for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
+                representatives.put(new Integer(i).toString().concat(
+                        new Integer(j).toString()),
+                        new Integer(i).toString().concat(new Integer(j).toString()));
+            }
+        }
         for(int i = 0; edges.size() > 1; i += 1)
         {
             Edge e1 = edges.get(i);
@@ -125,10 +132,22 @@ class MazeWorld extends World {
 
         return prev + 1;
     }
-    boolean find(Cell c1, Cell c2) {
-        return true;
+    boolean find(HashMap<String, String> h, Cell c) {
+        for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
+            for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
+                if(h.get(new Integer(i).toString().concat(new Integer(j).toString())).equals(
+                        h.get(new Integer(i).toString().concat(new Integer(j).toString()))))
+                {
+                    return true;
+                }
+                else
+                {
+                    find(h.)
+                }
+            }
+        }
     }
-    void Union(Cell c1, Cell c2) {
+    void Union(HashMap<String, String> h, boolean b1, boolean b2) {
         
     }
     //The entire background image for this world
