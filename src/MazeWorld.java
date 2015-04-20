@@ -60,6 +60,16 @@ class Cell {
         return new RectangleImage(new Posn(this.x, this.y), 
                 Cell.SIZE, Cell.SIZE, new Color(192,192,192));
     }
+    boolean find(HashMap<Cell, Cell> h, Cell c) {
+        if(h.get(this).sameCell(c))
+        {
+            return true;
+        }
+        else
+        {
+            return this.find(h, h.get(c));
+        }
+    }
 }
 
 class Player {
@@ -76,7 +86,7 @@ class MazeWorld extends World {
     // all the cells
     ArrayList<ArrayList<Cell>> board;
     ArrayList<Edge> edges;
-    HashMap<String, String> representatives;
+    HashMap<Cell, Cell> representatives;
     MazeWorld() {
         //default constructor
     }
@@ -98,25 +108,23 @@ class MazeWorld extends World {
         this.removeDuplicates(edges);
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
-                representatives.put(new Integer(i).toString().concat(
-                        new Integer(j).toString()),
-                        new Integer(i).toString().concat(new Integer(j).toString()));
+                representatives.put(board.get(i).get(j), board.get(i).get(j));
             }
         }
         for(int i = 0; edges.size() > 1; i += 1)
         {
             Edge e1 = edges.get(i);
-            if(find(representatives, e1.c1) == find(representatives, e1.c2))
+            if(e1.c1.find(representatives, e1.c2) == e1.c2.find(representatives, e1.c1))
                 edges.remove(i);
             else
-                Union(representatives, find(representatives, e1.c1), find(representatives, e1.c2));
+                Union(representatives, e1.c1, e1.c2);
         }
     }
     public int removeDuplicates(ArrayList<Edge> edges) {
         if (edges.size() <= 2) {
             return edges.size();
         }
-        
+
         int prev = 1; // point to previous
         int curr = 2; // point to current
 
@@ -132,64 +140,49 @@ class MazeWorld extends World {
 
         return prev + 1;
     }
-    boolean find(HashMap<String, String> h, Cell c) {
-        for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
-            for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
-                if(h.get(new Integer(i).toString().concat(new Integer(j).toString())).equals(
-                        h.get(new Integer(i).toString().concat(new Integer(j).toString()))))
-                {
-                    return true;
-                }
-                else
-                {
-                    find(h.)
-                }
-            }
-        }
+    void Union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
+        h.put(c1, c2);
     }
-    void Union(HashMap<String, String> h, boolean b1, boolean b2) {
-        
-    }
-    //The entire background image for this world
-    public WorldImage background = 
-            new RectangleImage(new Posn(0, 0), 0, 0, new White());
-    // overlay background onto cells
-    public WorldImage makeImage() {
-        WorldImage acc = new RectangleImage(new Posn(0, 0), 
-                0, 0, new Black());
+//The entire background image for this world
+public WorldImage background = 
+new RectangleImage(new Posn(0, 0), 0, 0, new White());
+// overlay background onto cells
+public WorldImage makeImage() {
+    WorldImage acc = new RectangleImage(new Posn(0, 0), 
+            0, 0, new Black());
 
-        return acc;
-    }
-    void updateCells() {
+    return acc;
+}
+void updateCells() {
 
+}
+// handle key events
+public void onKeyEvent(String ke) {
+    updatePlayer(ke);
+}
+public void updatePlayer(String ke) {
+    if (ke.equals("up")) {
+        this.player.y -= 1;
+        //this.player.cell = this.player.cell.top;
     }
-    // handle key events
-    public void onKeyEvent(String ke) {
-        updatePlayer(ke);
+    if (ke.equals("down")) {
+        this.player.y += 1;
+        //this.player.cell = this.player.cell.bottom;
     }
-    public void updatePlayer(String ke) {
-        if (ke.equals("up")) {
-            this.player.y -= 1;
-            //this.player.cell = this.player.cell.top;
-        }
-        if (ke.equals("down")) {
-            this.player.y += 1;
-            //this.player.cell = this.player.cell.bottom;
-        }
-        if (ke.equals("left")) {
-            this.player.x -= 1;
-            //this.player.cell = this.player.cell.left;
-        }
-        if (ke.equals("right")) {
-            this.player.x += 1;
-            //this.player.cell = this.player.cell.right;
-        }
+    if (ke.equals("left")) {
+        this.player.x -= 1;
+        //this.player.cell = this.player.cell.left;
     }
-    //update the player's position
-    // method for each tick
-    public void onTick() {
-        this.updateCells();
+    if (ke.equals("right")) {
+        this.player.x += 1;
+        //this.player.cell = this.player.cell.right;
     }
+}
+//update the player's position
+// method for each tick
+public void onTick() {
+    this.updateCells();
+}
 }
 
 class ExamplesWorld {
