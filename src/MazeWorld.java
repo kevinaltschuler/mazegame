@@ -9,14 +9,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Stack;
- 
+
 import tester.*;
 import javalib.colors.*;
 import javalib.worldimages.*;
 import javalib.impworld.*;
- 
+
 import java.awt.Color;
- 
+
 //Represents an Edge of a Cell
 class Edge implements Comparator<Edge>, Comparable<Edge> {
     Integer weight;
@@ -38,7 +38,7 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
     public boolean sameEdge(Edge that) {
         return ((this.c1.sameCell(that.c1) && this.c2.sameCell(that.c2)) ||
                 this.c1.sameCell(that.c2) && this.c2.sameCell(that.c1));
- 
+
     }
 }
 // Represents a single square of the game area
@@ -71,13 +71,13 @@ class Cell {
         }
     }
 }
- 
+
 class Player {
     int x;
     int y;
     Cell cell;
 }
- 
+
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 64;
@@ -126,7 +126,7 @@ class MazeWorld extends World {
         }
         int prev = 1; // point to previous
         int curr = 2; // point to current
- 
+
         while (curr < edges.size()) {
             if (edges.get(curr).sameEdge(edges.get(prev)) && edges.get(curr).sameEdge(edges.get(prev - 1))) {
                 curr += 1;
@@ -136,57 +136,61 @@ class MazeWorld extends World {
                 curr += 1;
             }
         }
- 
+
         return prev + 1;
     }
     void Union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
         h.put(c1, c2);
     }
-//The entire background image for this world
-public WorldImage background = 
-new RectangleImage(new Posn(0, 0), 0, 0, new White());
-// overlay background onto cells
-public WorldImage makeImage() {
-    WorldImage acc = new RectangleImage(new Posn(0, 0), 
-            0, 0, new Black());
-    return acc;
-}
-void updateCells() {
-}
-// handle key events
-public void onKeyEvent(String ke) {
-    updatePlayer(ke);
-}
-public void updatePlayer(String ke) {
-    if (ke.equals("up")) {
-        this.player.y -= 1;
-        //this.player.cell = this.player.cell.top;
+    //The entire background image for this world
+    public WorldImage background = 
+            new RectangleImage(new Posn(0, 0), 0, 0, new White());
+    // overlay background onto cells
+    public WorldImage makeImage() {
+        WorldImage acc = new RectangleImage(new Posn(0, 0), 
+                0, 0, new Black());
+        for(Edge e: edges)
+        {
+            acc = new OverlayImages(acc, new LineImage(new Posn(e.c2.x-e.c1.x, 0), new Posn(0,0), new Black()));
+        }
+        return acc;
     }
-    if (ke.equals("down")) {
-        this.player.y += 1;
-        //this.player.cell = this.player.cell.bottom;
+    void updateCells() {
     }
-    if (ke.equals("left")) {
-        this.player.x -= 1;
-        //this.player.cell = this.player.cell.left;
+    // handle key events
+    public void onKeyEvent(String ke) {
+        updatePlayer(ke);
     }
-    if (ke.equals("right")) {
-        this.player.x += 1;
-        //this.player.cell = this.player.cell.right;
+    public void updatePlayer(String ke) {
+        if (ke.equals("up")) {
+            this.player.y -= 1;
+            //this.player.cell = this.player.cell.top;
+        }
+        if (ke.equals("down")) {
+            this.player.y += 1;
+            //this.player.cell = this.player.cell.bottom;
+        }
+        if (ke.equals("left")) {
+            this.player.x -= 1;
+            //this.player.cell = this.player.cell.left;
+        }
+        if (ke.equals("right")) {
+            this.player.x += 1;
+            //this.player.cell = this.player.cell.right;
+        }
     }
-}
-//update the player's position
-// method for each tick
-public void onTick() {
-    this.updateCells();
-}
+    //update the player's position
+    // method for each tick
+    public void onTick() {
+        this.updateCells();
+    }
 }
 class ExamplesWorld {
     //TODO
     //Cell c4 = new Cell(25.0, 10, 20);
     //Cell c5 = new Cell(25.0, 10, 0);
- 
- 
+
+
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
         m1.bigBang(Cell.SIZE * MazeWorld.WIDTH, Cell.SIZE * MazeWorld.HEIGHT, 1);
