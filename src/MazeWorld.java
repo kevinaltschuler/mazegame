@@ -42,13 +42,17 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
     WorldImage edgeImage() {
         if(this.c1.x == this.c2.x)
         {
-            return new LineImage(new Posn(this.c1.x - Cell.SIZE, this.c2.y + Cell.SIZE),
-                          new Posn(this.c1.x + Cell.SIZE, this.c2.y + Cell.SIZE), new Black());
+            return new LineImage(new Posn((this.c1.x * Cell.SIZE) - Cell.SIZE,
+                    (this.c2.y * Cell.SIZE)),
+                          new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE,
+                                  (this.c2.y * Cell.SIZE)), new Black());
         }
         else
         {
-            return new LineImage(new Posn(this.c1.x + Cell.SIZE, this.c2.y - Cell.SIZE),
-                          new Posn(this.c1.x + Cell.SIZE, this.c2.y + Cell.SIZE), new Black());
+            return new LineImage(new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE, 
+                    (this.c2.y * Cell.SIZE) - Cell.SIZE),
+                          new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE, 
+                                  (this.c2.y * Cell.SIZE) + Cell.SIZE), new Black());
         }
     }
 }
@@ -61,23 +65,31 @@ class Cell {
     //size in pixels
     static final int SIZE = 10;
     Cell(int x, int y) {
-        this.x = x * Cell.SIZE;
-        this.y = y * Cell.SIZE;
+        this.x = x;
+        this.y = y;
     }
-    public boolean sameCell(Cell that) {
+    public boolean equals(Cell that) {
         return (this.x == that.x && this.y == that.y);
+    }
+    public boolean sameCell(Cell that)
+    {
+        return this.equals(that);
+    }
+    public int hashCode()
+    {
+        return this.x + this.y;
     }
     WorldImage cellImage(double waterHeight) {
         return new RectangleImage(new Posn(this.x, this.y),
                 Cell.SIZE, Cell.SIZE, new Color(192,192,192));
     }
-    boolean find(HashMap<Cell, Cell> h, Cell c) {
-        if(h.get(this).sameCell(c)) {
-            System.out.println("find if");
-            return true;
+    Cell find(HashMap<Cell, Cell> h) {
+        if(this.sameCell(h.get(this)))
+        {
+            return this;
         }
         else {
-            return this.find(h, h.get(c));
+            return h.get(this).find(h);
         }
     }
 }
@@ -89,8 +101,8 @@ class Player {
 }
 
 class MazeWorld extends World {
-    static final int WIDTH = 30;
-    static final int HEIGHT = 30;
+    static final int WIDTH = 10;
+    static final int HEIGHT = 10;
     //player
     Player player = new Player();
     // all the cells
@@ -114,14 +126,17 @@ class MazeWorld extends World {
         }
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
-                edges.add(new Edge(board.get(i).get(j), board.get((i + 1) % MazeWorld.WIDTH).get(j)));
-                edges.add(new Edge(board.get(i).get(j), board.get(Math.abs(i - 1)).get(j)));
-                edges.add(new Edge(board.get(i).get(j), board.get(i).get((j + 1) % MazeWorld.HEIGHT)));
-                edges.add(new Edge(board.get(i).get(j), board.get(i).get(Math.abs(j - 1))));
+                if(board.get(i).get(j).x != MazeWorld.WIDTH)
+                {
+                    edges.add(new Edge(board.get(i).get(j), board.get(i + 1).get(j)));
+                }
+                if(board.get(i).get(j).y != MazeWorld.HEIGHT)
+                {
+                    edges.add(new Edge(board.get(i).get(j), board.get(i).get((j + 1))));
+                }
             }
         }
         Collections.sort(edges);
-        this.removeDuplicates(edges);
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
                 representatives.put(board.get(i).get(j), board.get(i).get(j));
@@ -135,38 +150,17 @@ class MazeWorld extends World {
         while(tempEdges.size() > 1)
         {
             Edge e1 = tempEdges.get(0);
-            if(e1.c1.find(representatives, e1.c2) == e1.c2.find(representatives, e1.c1)) {
+            if(e1.c1.find(representatives).sameCell(e1.c2.find(representatives))) {
                 tempEdges.remove(0);
-                System.out.println(3);
             }
             else {
                 this.edges.add(e1);
-                System.out.println(4);
-                Union(representatives, e1.c1, e1.c2);
-                System.out.println(5);
+                Union(representatives, e1.c1.find(representatives), e1.c2.find(representatives));
+                tempEdges.remove(0);
             }
-            Collections.sort(tempEdges);
+            
+            System.out.println(edges.size() + " " + tempEdges.size());
         }
-        //System.out.println(edges.size());
-    }
-    public int removeDuplicates(ArrayList<Edge> edges) {
-        if (edges.size() <= 2) {
-            return edges.size();
-        }
-        int prev = 1; // point to previous
-        int curr = 2; // point to current
-
-        while (curr < edges.size()) {
-            if (edges.get(curr).sameEdge(edges.get(prev)) && edges.get(curr).sameEdge(edges.get(prev - 1))) {
-                curr += 1;
-            } else {
-                prev += 1;
-                edges.set(prev, edges.get(curr));
-                curr += 1;
-            }
-        }
-
-        return prev + 1;
     }
     void Union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
         h.put(c1, c2);
@@ -222,12 +216,10 @@ class ExamplesWorld {
         return t.checkExpect(c1.sameCell(c2), true) &&
                 t.checkExpect(c1.sameCell(c3), false);
     }
-    /*
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
         m1.bigBang(1000, 600, 1);
         return 1;
     }
     int run = this.runAnimation();
-*/
 }
