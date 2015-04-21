@@ -40,6 +40,18 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
                 this.c1.sameCell(that.c2) && this.c2.sameCell(that.c1));
 
     }
+    WorldImage edgeImage() {
+        if(this.c1.x == this.c2.x)
+        {
+            return new LineImage(new Posn(this.c1.x - Cell.SIZE/2, this.c2.y + Cell.SIZE/2),
+                          new Posn(this.c1.x + Cell.SIZE/2, this.c2.y + Cell.SIZE/2), new Black());
+        }
+        else
+        {
+            return new LineImage(new Posn(this.c1.x + Cell.SIZE/2, this.c2.y - Cell.SIZE/2),
+                          new Posn(this.c1.x + Cell.SIZE/2, this.c2.y + Cell.SIZE/2), new Black());
+        }
+    }
 }
 // Represents a single square of the game area
 class Cell {
@@ -50,8 +62,8 @@ class Cell {
     //size in pixels
     static final int SIZE = 650/MazeWorld.WIDTH;
     Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x = x * Cell.SIZE;
+        this.y = y * Cell.SIZE;
     }
     public boolean sameCell(Cell that) {
         return (this.x == that.x && this.y == that.y);
@@ -89,6 +101,7 @@ class MazeWorld extends World {
     HashMap<Cell, Cell> representatives;
     MazeWorld() {
         //default constructor
+        this.reset(this.WIDTH * Cell.SIZE, this.HEIGHT * Cell.SIZE);
     }
     void reset(int width, int height) {
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
@@ -151,7 +164,7 @@ class MazeWorld extends World {
                 0, 0, new Black());
         for(Edge e: edges)
         {
-            acc = new OverlayImages(acc, new LineImage(new Posn(e.c2.x-e.c1.x, 0), new Posn(0,0), new Black()));
+            acc = new OverlayImages(acc, e.edgeImage());
         }
         return acc;
     }
