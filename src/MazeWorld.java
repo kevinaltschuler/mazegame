@@ -40,19 +40,18 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
 
     }
     WorldImage edgeImage() {
-        if(this.c1.x == this.c2.x)
-        {
-            return new LineImage(new Posn((this.c1.x * Cell.SIZE) - Cell.SIZE,
-                    (this.c2.y * Cell.SIZE)),
-                          new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE,
-                                  (this.c2.y * Cell.SIZE)), new Black());
+        if(this.c1.x == this.c2.x) {
+            return new LineImage(new Posn((this.c1.x * Cell.SIZE),
+                    this.c1.y * Cell.SIZE + Cell.SIZE),
+                          new Posn(this.c1.x * Cell.SIZE + Cell.SIZE,
+                                  this.c1.y * Cell.SIZE + Cell.SIZE), new Black());
         }
         else
         {
-            return new LineImage(new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE, 
-                    (this.c2.y * Cell.SIZE) - Cell.SIZE),
-                          new Posn((this.c1.x * Cell.SIZE) + Cell.SIZE, 
-                                  (this.c2.y * Cell.SIZE) + Cell.SIZE), new Black());
+            return new LineImage(new Posn(this.c1.x * Cell.SIZE + Cell.SIZE, 
+                    this.c1.y * Cell.SIZE),
+                          new Posn(this.c1.x * Cell.SIZE + Cell.SIZE, 
+                                  this.c1.y * Cell.SIZE + Cell.SIZE), new Black());
         }
     }
 }
@@ -101,13 +100,14 @@ class Player {
 }
 
 class MazeWorld extends World {
-    static final int WIDTH = 10;
-    static final int HEIGHT = 10;
+    static final int WIDTH = 64;
+    static final int HEIGHT = 60;
     //player
     Player player = new Player();
     // all the cells
     ArrayList<ArrayList<Cell>> board;
     ArrayList<Edge> edges;
+    ArrayList<Edge> walls;
     HashMap<Cell, Cell> representatives;
     MazeWorld() {
         //default constructor
@@ -117,6 +117,7 @@ class MazeWorld extends World {
         board = new ArrayList<ArrayList<Cell>>();
         edges = new ArrayList<Edge>();
         representatives = new HashMap<Cell, Cell>();
+        walls = new ArrayList<Edge>();
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             ArrayList<Cell> row = new ArrayList<Cell>();
             for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
@@ -152,13 +153,13 @@ class MazeWorld extends World {
             Edge e1 = tempEdges.get(0);
             if(e1.c1.find(representatives).sameCell(e1.c2.find(representatives))) {
                 tempEdges.remove(0);
+                this.walls.add(e1);
             }
             else {
                 this.edges.add(e1);
                 Union(representatives, e1.c1.find(representatives), e1.c2.find(representatives));
                 tempEdges.remove(0);
             }
-            
             System.out.println(edges.size() + " " + tempEdges.size());
         }
     }
@@ -169,7 +170,7 @@ class MazeWorld extends World {
     public WorldImage makeImage() {
         WorldImage acc = new RectangleImage(new Posn(0, 0), 
                 0, 0, new Black());
-        for(Edge e: edges)
+        for(Edge e: walls)
         {
             acc = new OverlayImages(acc, e.edgeImage());
         }
@@ -206,19 +207,16 @@ class MazeWorld extends World {
     }
 }
 class ExamplesWorld {
-    
     Cell c1 = new Cell(1, 1);
     Cell c2 = new Cell(1, 1);
     Cell c3 = new Cell(1, 2);
-    
-    
     boolean testSameCell(Tester t) {
         return t.checkExpect(c1.sameCell(c2), true) &&
                 t.checkExpect(c1.sameCell(c3), false);
     }
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
-        m1.bigBang(1000, 600, 1);
+        m1.bigBang(Cell.SIZE * MazeWorld.WIDTH, Cell.SIZE * MazeWorld.HEIGHT, 1);
         return 1;
     }
     int run = this.runAnimation();
