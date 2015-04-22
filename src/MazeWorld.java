@@ -100,7 +100,7 @@ class Player {
 }
 
 class MazeWorld extends World {
-    static final int WIDTH = 64;
+    static final int WIDTH = 100;
     static final int HEIGHT = 60;
     //player
     Player player = new Player();
