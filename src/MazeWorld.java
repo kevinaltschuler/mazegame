@@ -77,17 +77,11 @@ class Cell {
     public boolean equals(Cell that) {
         return (this.x == that.x && this.y == that.y);
     }
-    public int hashCode()
-    {
+    public int hashCode() {
         return this.x + this.y;
     }
-    WorldImage cellImage(double waterHeight) {
-        return new RectangleImage(new Posn(this.x, this.y),
-                Cell.SIZE, Cell.SIZE, new Color(192,192,192));
-    }
     Cell find(HashMap<Cell, Cell> h) {
-        if(this.equals(h.get(this)))
-        {
+        if(this.equals(h.get(this))) {
             return this;
         }
         else {
@@ -339,9 +333,9 @@ class ExamplesWorld {
     Cell c1 = new Cell(1, 1);
     Cell c2 = new Cell(1, 1);
     Cell c3 = new Cell(1, 2);
-    Edge e1 = new Edge(c1, c3);
-    Edge e2 = new Edge(c3, c1);
-    Edge e4 = new Edge(c1, c1);
+    Edge e1 = new Edge(1, c1, c3);
+    Edge e2 = new Edge(2, c3, c1);
+    Edge e4 = new Edge(3, c1, c1);
     boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
@@ -350,10 +344,25 @@ class ExamplesWorld {
         return t.checkExpect(e1.equals(e1), true) &&
                 t.checkExpect(e4.equals(e1), false);
     }
-    int runAnimation() {
+    boolean testCompare(Tester t) {
+        return t.checkExpect(e1.compare(e2, e1), 1);
+    }
+    boolean testCompareto(Tester t) {
+        return t.checkExpect(e1.compareTo(e2), -1);
+    }
+    boolean testEdgeImage(Tester t) {
+        return t.checkExpect(e1.edgeImage(), new LineImage(new Posn((this.c1.x * Cell.SIZE),
+                    this.c1.y * Cell.SIZE + Cell.SIZE),
+                          new Posn(this.c1.x * Cell.SIZE + Cell.SIZE,
+                                  this.c1.y * Cell.SIZE + Cell.SIZE), new Black()));
+    }
+    boolean testHashCode(Tester t) {
+        return t.checkExpect(c1.hashCode(), 2);
+    }
+    /*int runAnimation() {
         MazeWorld m1 = new MazeWorld();
         m1.bigBang(Cell.SIZE * MazeWorld.WIDTH + 10, Cell.SIZE * MazeWorld.HEIGHT + 10, .001);
         return 1;
     }
-    int run = this.runAnimation();
+    int run = this.runAnimation();*/
 }
