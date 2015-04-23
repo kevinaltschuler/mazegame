@@ -33,9 +33,11 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
         this.c1 = c1;
         this.c2 = c2;
     }
+    //compares two edges
     public int compare(Edge e1, Edge e2) {
         return e1.weight - e2.weight;
     }
+    //compares this edge to another
     public int compareTo(Edge e) {
         return this.weight.compareTo(e.weight);
     }
@@ -50,6 +52,7 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
         }
 
     }
+    //Draws Edge Based on Position
     WorldImage edgeImage() {
         if (this.c1.x == this.c2.x) {
             return new LineImage(new Posn((this.c1.x * Cell.SIZE),
@@ -80,6 +83,7 @@ class Cell {
         this.y = y;
         this.neighbors = new ArrayList<Edge>();
     }
+  //Checks equality between Cell
     @Override public boolean equals(Object that) {
         if (!(that instanceof Cell)) {
             return false;
@@ -89,9 +93,11 @@ class Cell {
             return (this.x == c.x && this.y == c.y);
         }
     }
+  //Checks the Hash Code of a Cell
     @Override public int hashCode() {
         return this.x + this.y;
     }
+    //Finds if this cell is attached to hashmap h
     Cell find(HashMap<Cell, Cell> h) {
         if (this.equals(h.get(this))) {
             return this;
@@ -100,6 +106,7 @@ class Cell {
             return h.get(this).find(h);
         }
     }
+    //makes all possible neighboring cells of this
     public void makeNeighbors(ArrayList<Edge> edges) {
         for (Edge e : edges) {
             if (e.c1.equals(this)) {
@@ -112,43 +119,48 @@ class Cell {
         }
     }
 }
-
+//To Represent a Player
 class Player {
     Cell cell;
     Player(Cell cell) {
         this.cell = cell;
     }
 }
-
+//To Represent a Stack
 class Stack<T> {
     ArrayList<T> list;
     Stack(ArrayList<T> list) {
         this.list = list;
     }
+    //Adds to the end of the Stack
     public void add(T t) {
         list.add(0, t);
     }
+    //Removes from the Stack
     public T pop() { 
         T result = list.get(0);
         list.remove(0);
         return result;
     }
 }
+//To Represent a Queue
 class Queue<T> {
     ArrayList<T> list;
     Queue(ArrayList<T> list) {
         this.list = list;
     }
+    //Adds to the end of the Queue
     public void add(T t) {
         list.add(list.size(), t);
     }
+    //Removes from the Queue
     public T pop() { 
         T result = list.get(0);
         list.remove(0);
         return result;
     }
 }
-
+//To Represent a MazeWorld
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 60;
@@ -168,6 +180,7 @@ class MazeWorld extends World {
         //default constructor
         this.reset(MazeWorld.WIDTH * Cell.SIZE, MazeWorld.HEIGHT * Cell.SIZE);
     }
+    //Creates a new Random Maze
     void reset(int width, int height) {
         player = new Player(new Cell(0, 0));
         // all the cells
@@ -213,6 +226,7 @@ class MazeWorld extends World {
         }
         player.cell = board.get(0).get(0);
     }
+    //Run's Kruskal's Algorithm when constructing a maze
     void kruskals() {
         ArrayList<Edge> workList = new ArrayList<Edge>();
         workList.addAll(edges);
@@ -231,6 +245,7 @@ class MazeWorld extends World {
             }
         }
     }
+    //Unions two cells that share an Edge
     void union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
         h.put(c1, c2);
     }
@@ -254,6 +269,7 @@ class MazeWorld extends World {
                         Cell.SIZE - 1, Cell.SIZE - 1, new Blue()));
         return acc;
     }
+    //Runs Depth First
     void updateDepth() {
         if (dWorklist.list.size() > 0) {
             Edge next = dWorklist.pop();
@@ -270,6 +286,7 @@ class MazeWorld extends World {
             }
         }
     }
+    //Runs Breadth First
     void updateBreadth() {
         if (bWorklist.list.size() > 0) {
             Edge next = bWorklist.pop();
@@ -290,6 +307,7 @@ class MazeWorld extends World {
     public void onKeyEvent(String ke) {
         updatePlayer(ke);
     }
+    //Moves the player with arrow keys, or either search method
     public void updatePlayer(String ke) {
         if (ke.equals("d")) {
             if (this.player.cell.equals(board.get(0).get(0))) {
@@ -327,6 +345,7 @@ class MazeWorld extends World {
             this.visited.add(this.player.cell);
         }
     }
+    // checks if that edge is in this maze
     public boolean containsEdge(Edge that) {
         boolean result = false;
         for (Edge e : edges) {
@@ -347,13 +366,14 @@ class MazeWorld extends World {
         }
     }
 }
+//Tests and Examples for MazeWorld
 class ExamplesWorld {
     Cell c1 = new Cell(1, 1);
     Cell c2 = new Cell(1, 1);
     Cell c3 = new Cell(1, 2);
     Edge e1 = new Edge(1, c1, c3);
     Edge e2 = new Edge(2, c3, c1);
-    Edge e4 = new Edge(3, c1, c1);
+    Edge e4 = new Edge(3, c2, c1);
     boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
