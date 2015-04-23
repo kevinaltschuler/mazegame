@@ -33,8 +33,8 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
         this.c1 = c1;
         this.c2 = c2;
     }
-    public int compare(Edge arg0, Edge arg1) {
-        return arg0.weight - arg1.weight;
+    public int compare(Edge e1, Edge e2) {
+        return e1.weight - e2.weight;
     }
     public int compareTo(Edge arg0) {
         return this.weight.compareTo(arg0.weight);
@@ -128,8 +128,9 @@ class Stack<T> {
         return result;
     }
 }
+
 class MazeWorld extends World {
-    static final int WIDTH = 64;
+    static final int WIDTH = 100;
     static final int HEIGHT = 60;
     boolean depth;
     //player
@@ -293,18 +294,18 @@ class ExamplesWorld {
     Cell c1 = new Cell(1, 1);
     Cell c2 = new Cell(1, 1);
     Cell c3 = new Cell(1, 2);
-    Edge e1 = new Edge(c1, c3);
-    Edge e2 = new Edge(c3, c1);
-    Edge e4 = new Edge(c1, c1);
+    Edge e1 = new Edge(1, c1, c3);
+    Edge e2 = new Edge(2, c3, c1);
+    Edge e4 = new Edge(3, c1, c1);
     MazeWorld m1 = new MazeWorld();
-   /* boolean testSameCell(Tester t) {
+    boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
     }
     boolean testSameEdge(Tester t) {
         return t.checkExpect(e1.equals(e1), true) &&
                 t.checkExpect(e4.equals(e1), false);
-    }*/
+    }
     int runAnimation() {
         m1.bigBang(Cell.SIZE * MazeWorld.WIDTH + 10, Cell.SIZE * MazeWorld.HEIGHT + 10, .0001);
         return 1;
