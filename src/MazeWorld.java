@@ -293,7 +293,7 @@ class MazeWorld extends World {
             this.visited.add(next.c1);
             this.player.cell = next.c2;
             if (next.c2.equals(new Cell(MazeWorld.WIDTH, MazeWorld.HEIGHT))) {
-                this.depth = false;
+                this.breadth = false;
             }
             else if (!this.visited.contains(next.c2) && 
                     !next.c2.equals(this.board.get(0).get(0))) {
