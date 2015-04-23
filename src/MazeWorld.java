@@ -128,7 +128,6 @@ class Stack<T> {
         return result;
     }
 }
-//To Represent a new Maze
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 60;
@@ -271,6 +270,7 @@ class MazeWorld extends World {
             this.visited.add(this.player.cell);
         }
     }
+    //Checks if a MazeWorld has a specific Edge Present
     public boolean containsEdge(Edge that) {
         boolean result = false;
         for (Edge e : edges) {
