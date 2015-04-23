@@ -128,11 +128,26 @@ class Stack<T> {
         return result;
     }
 }
+class Queue<T> {
+    ArrayList<T> list;
+    Queue(ArrayList<T> list) {
+        this.list = list;
+    }
+    public void add(T t) {
+        list.add(list.size(), t);
+    }
+    public T pop() { 
+        T result = list.get(0);
+        list.remove(0);
+        return result;
+    }
+}
 
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 60;
     boolean depth;
+    boolean breadth;
     //player
     Player player = new Player(new Cell(0, 0));
     // all the cells
@@ -141,13 +156,24 @@ class MazeWorld extends World {
     ArrayList<Edge> edges = new ArrayList<Edge>();
     ArrayList<Edge> walls = new ArrayList<Edge>();
     HashMap<Cell, Cell> representatives = new HashMap<Cell, Cell>();
-    
-    Stack<Edge> worklist = new Stack<Edge>(new ArrayList<Edge>());
+    Stack<Edge> Dworklist = new Stack<Edge>(new ArrayList<Edge>());
+    Queue<Edge> Bworklist = new Queue<Edge>(new ArrayList<Edge>());
     MazeWorld() {
         //default constructor
         this.reset(MazeWorld.WIDTH * Cell.SIZE, MazeWorld.HEIGHT * Cell.SIZE);
     }
     void reset(int width, int height) {
+        player = new Player(new Cell(0, 0));
+        // all the cells
+        board = new ArrayList<ArrayList<Cell>>();
+        visited = new ArrayList<Cell>();
+        edges = new ArrayList<Edge>();
+        walls = new ArrayList<Edge>();
+        representatives = new HashMap<Cell, Cell>();
+        Dworklist = new Stack<Edge>(new ArrayList<Edge>());
+        Bworklist = new Queue<Edge>(new ArrayList<Edge>());
+        breadth = false;
+        depth = false;
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             ArrayList<Cell> row = new ArrayList<Cell>();
             for (int j = 0; j <= MazeWorld.HEIGHT; j += 1) {
@@ -180,7 +206,6 @@ class MazeWorld extends World {
             }
         }
         player.cell = board.get(0).get(0);
-        worklist = new Stack<Edge>(player.cell.neighbors);
     }
     void kruskals() {
         ArrayList<Edge> workList = new ArrayList<Edge>();
@@ -224,8 +249,8 @@ class MazeWorld extends World {
         return acc;
     }
     void updateDepth() {
-        if(worklist.list.size() > 0) {
-            Edge next = worklist.pop();
+        if(Dworklist.list.size() > 0) {
+            Edge next = Dworklist.pop();
             this.visited.add(next.c1);
             this.player.cell = next.c2;
             if(next.c2.equals(new Cell(MazeWorld.WIDTH, MazeWorld.HEIGHT))) {
@@ -233,7 +258,22 @@ class MazeWorld extends World {
             }
             else if (!this.visited.contains(next.c2) && !next.c2.equals(this.board.get(0).get(0))) {
                 for (Edge e : player.cell.neighbors) {
-                        worklist.add(e);
+                        Dworklist.add(e);
+                }
+            }
+        }
+    }
+    void updateBreadth() {
+        if(Bworklist.list.size() > 0) {
+            Edge next = Bworklist.pop();
+            this.visited.add(next.c1);
+            this.player.cell = next.c2;
+            if(next.c2.equals(new Cell(MazeWorld.WIDTH, MazeWorld.HEIGHT))) {
+                this.depth = false;
+            }
+            else if (!this.visited.contains(next.c2) && !next.c2.equals(this.board.get(0).get(0))) {
+                for (Edge e : player.cell.neighbors) {
+                        Bworklist.add(e);
                 }
             }
         }
@@ -244,7 +284,16 @@ class MazeWorld extends World {
     }
     public void updatePlayer(String ke) {
         if (ke.equals("d")) {
+            if(this.player.cell.equals(board.get(0).get(0))) {
+                Dworklist = new Stack<Edge>(player.cell.neighbors);
+            }
             this.depth = !this.depth;
+        }
+        if (ke.equals("b")) {
+            if(this.player.cell.equals(board.get(0).get(0))) {
+                Bworklist = new Queue<Edge>(player.cell.neighbors);
+            }
+            this.breadth = !this.breadth;
         }
         if (ke.equals("r")) {
             this.reset(MazeWorld.WIDTH * Cell.SIZE, MazeWorld.HEIGHT * Cell.SIZE);
@@ -279,7 +328,10 @@ class MazeWorld extends World {
     // method for each tick
     public void onTick() {
         if(this.depth) {
-        this.updateDepth();
+            this.updateDepth();
+        }
+        if(this.breadth) {
+            this.updateBreadth();
         }
     }
 }
@@ -290,14 +342,14 @@ class ExamplesWorld {
     Edge e1 = new Edge(c1, c3);
     Edge e2 = new Edge(c3, c1);
     Edge e4 = new Edge(c1, c1);
-   /* boolean testSameCell(Tester t) {
+    boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
     }
     boolean testSameEdge(Tester t) {
         return t.checkExpect(e1.equals(e1), true) &&
                 t.checkExpect(e4.equals(e1), false);
-    }*/
+    }
     int runAnimation() {
         MazeWorld m1 = new MazeWorld();
         m1.bigBang(Cell.SIZE * MazeWorld.WIDTH + 10, Cell.SIZE * MazeWorld.HEIGHT + 10, .001);
