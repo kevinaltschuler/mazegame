@@ -33,17 +33,21 @@ class Edge implements Comparator<Edge>, Comparable<Edge> {
         this.c1 = c1;
         this.c2 = c2;
     }
+    //Compares two edge weights
     public int compare(Edge arg0, Edge arg1) {
         return arg0.weight - arg1.weight;
     }
+    //Compares two weights
     public int compareTo(Edge arg0) {
         return this.weight.compareTo(arg0.weight);
     }
+    //Checks Equality between Edges
     public boolean equals(Edge that) {
         return ((this.c1.equals(that.c1) && this.c2.equals(that.c2)) ||
                 this.c1.equals(that.c2) && this.c2.equals(that.c1));
 
     }
+    //Draws Edge Based on Position
     WorldImage edgeImage() {
         if(this.c1.x == this.c2.x) {
             return new LineImage(new Posn((this.c1.x * Cell.SIZE),
@@ -74,12 +78,15 @@ class Cell {
         this.y = y;
         this.neighbors = new ArrayList<Edge>();
     }
+    //Checks equality between Cell
     public boolean equals(Cell that) {
         return (this.x == that.x && this.y == that.y);
     }
+    //Checks the Hash Code of a Cell
     public int hashCode() {
         return this.x + this.y;
     }
+    //Finds if this cell is attached to hashmap h
     Cell find(HashMap<Cell, Cell> h) {
         if(this.equals(h.get(this))) {
             return this;
@@ -88,6 +95,7 @@ class Cell {
             return h.get(this).find(h);
         }
     }
+    //makes all possible neighboring cells of this
     public void makeNeighbors(ArrayList<Edge> edges) {
         for (Edge e : edges) {
             if (e.c1.equals(this)) {
@@ -100,36 +108,41 @@ class Cell {
         }
     }
 }
-
+//To Represent a Player
 class Player {
     Cell cell;
     Player(Cell cell) {
         this.cell = cell;
     }
 }
-
+//To Represent a Stack
 class Stack<T> {
     ArrayList<T> list;
     Stack(ArrayList<T> list) {
         this.list = list;
     }
+    //Adds to the end of the Stack
     public void add(T t) {
         list.add(0, t);
     }
+    //Removes from the Stack
     public T pop() { 
         T result = list.get(0);
         list.remove(0);
         return result;
     }
 }
+//To Represent a Queue
 class Queue<T> {
     ArrayList<T> list;
     Queue(ArrayList<T> list) {
         this.list = list;
     }
+    //Adds to the end of the Queue
     public void add(T t) {
         list.add(list.size(), t);
     }
+    //Removes from the Queue
     public T pop() { 
         T result = list.get(0);
         list.remove(0);
@@ -343,16 +356,7 @@ class ExamplesWorld {
     Cell c3 = new Cell(1, 2);
     Edge e1 = new Edge(1, c1, c3);
     Edge e2 = new Edge(2, c3, c1);
-    Edge e4 = new Edge(3, c1, c1);
-    void initData()
-    {
-        Cell c1 = new Cell(1, 1);
-        Cell c2 = new Cell(1, 1);
-        Cell c3 = new Cell(1, 2);
-        Edge e1 = new Edge(1, c1, c3);
-        Edge e2 = new Edge(2, c3, c1);
-        Edge e4 = new Edge(3, c2, c1);
-    }
+    Edge e4 = new Edge(3, c2, c1);
     boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
