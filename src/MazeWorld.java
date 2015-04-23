@@ -128,7 +128,7 @@ class Stack<T> {
         return result;
     }
 }
-
+//To Represent a new Maze
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 60;
@@ -147,6 +147,7 @@ class MazeWorld extends World {
         //default constructor
         this.reset(MazeWorld.WIDTH * Cell.SIZE, MazeWorld.HEIGHT * Cell.SIZE);
     }
+    //Creates a new random Maze
     void reset(int width, int height) {
         for (int i = 0; i <= MazeWorld.WIDTH; i += 1) {
             ArrayList<Cell> row = new ArrayList<Cell>();
@@ -182,6 +183,7 @@ class MazeWorld extends World {
         player.cell = board.get(0).get(0);
         worklist = new Stack<Edge>(player.cell.neighbors);
     }
+    //Uses Kruskal's Algorithm to build Maze Walls
     void kruskals() {
         ArrayList<Edge> workList = new ArrayList<Edge>();
         workList.addAll(edges);
@@ -200,6 +202,7 @@ class MazeWorld extends World {
             }
         }
     }
+    //Creates a new union of cells that share an edge
     void union(HashMap<Cell, Cell> h, Cell c1, Cell c2) {
         h.put(c1, c2);
     }
@@ -223,6 +226,7 @@ class MazeWorld extends World {
                 Cell.SIZE - 1, Cell.SIZE - 1, new Blue()));
         return acc;
     }
+    //Runs Depth First Search
     void updateDepth() {
         if(worklist.list.size() > 0) {
             Edge next = worklist.pop();
@@ -242,6 +246,7 @@ class MazeWorld extends World {
     public void onKeyEvent(String ke) {
         updatePlayer(ke);
     }
+    //Moves the Player by Arrow Keys or Whichever Search Method
     public void updatePlayer(String ke) {
         if (ke.equals("d")) {
             this.depth = !this.depth;
@@ -283,6 +288,7 @@ class MazeWorld extends World {
         }
     }
 }
+//Tests and examples of Mazes, Cells, Players and Edges
 class ExamplesWorld {
     Cell c1 = new Cell(1, 1);
     Cell c2 = new Cell(1, 1);
@@ -290,6 +296,7 @@ class ExamplesWorld {
     Edge e1 = new Edge(c1, c3);
     Edge e2 = new Edge(c3, c1);
     Edge e4 = new Edge(c1, c1);
+    MazeWorld m1 = new MazeWorld();
    /* boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
@@ -299,8 +306,7 @@ class ExamplesWorld {
                 t.checkExpect(e4.equals(e1), false);
     }*/
     int runAnimation() {
-        MazeWorld m1 = new MazeWorld();
-        m1.bigBang(Cell.SIZE * MazeWorld.WIDTH + 10, Cell.SIZE * MazeWorld.HEIGHT + 10, .001);
+        m1.bigBang(Cell.SIZE * MazeWorld.WIDTH + 10, Cell.SIZE * MazeWorld.HEIGHT + 10, .0001);
         return 1;
     }
     int run = this.runAnimation();
