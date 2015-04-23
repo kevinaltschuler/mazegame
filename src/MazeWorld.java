@@ -128,6 +128,7 @@ class Stack<T> {
         return result;
     }
 }
+//To Represent a new Maze
 class MazeWorld extends World {
     static final int WIDTH = 64;
     static final int HEIGHT = 60;
