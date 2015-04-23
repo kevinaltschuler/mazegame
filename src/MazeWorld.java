@@ -344,6 +344,15 @@ class ExamplesWorld {
     Edge e1 = new Edge(1, c1, c3);
     Edge e2 = new Edge(2, c3, c1);
     Edge e4 = new Edge(3, c1, c1);
+    void initData()
+    {
+        Cell c1 = new Cell(1, 1);
+        Cell c2 = new Cell(1, 1);
+        Cell c3 = new Cell(1, 2);
+        Edge e1 = new Edge(1, c1, c3);
+        Edge e2 = new Edge(2, c3, c1);
+        Edge e4 = new Edge(3, c2, c1);
+    }
     boolean testSameCell(Tester t) {
         return t.checkExpect(c1.equals(c2), true) &&
                 t.checkExpect(c1.equals(c3), false);
